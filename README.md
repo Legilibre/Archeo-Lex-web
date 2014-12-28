@@ -1,3 +1,8 @@
+# Translation into French of GitList themes default and bootstrap3
+Traduction en français des thèmes de GitList default et bootstrap3
+
+<hr />
+
 # GitList: an elegant git repository viewer
 [![Build Status](https://secure.travis-ci.org/klaussilveira/gitlist.png)](http://travis-ci.org/klaussilveira/gitlist)
 
