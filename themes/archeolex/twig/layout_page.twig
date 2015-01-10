@@ -4,25 +4,6 @@
     {% include 'navigation.twig' %}
 
     <div class="container">
-        <div class="header row">
-            <div class="col-sm-12">
-                {% if page in ['commits', 'searchcommits'] %}
-                <form class="pull-right" action="{{ app.request.basepath }}/{{repo}}/commits/{{branch}}/search" method="POST">
-                    <input type="search" name="query" class="form-control input-sm" placeholder="Rechercher des commits...">
-                </form>
-                {% else %}
-                <form class="pull-right" action="{{ app.request.basepath }}/{{repo}}/tree/{{branch}}/search" method="POST">
-                    <input type="search" name="query" class="form-control input-sm" placeholder="Rechercher un arbre...">
-                </form>
-                {% endif %}
-
-                {% if branches is defined %}
-                    {% include 'branch_menu.twig' %}
-                {% endif %}
-
-                {% include 'menu.twig' %}
-            </div>
-        </div>
 
         {% block content %}{% endblock %}
 
