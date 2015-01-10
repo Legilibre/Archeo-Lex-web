@@ -209,7 +209,7 @@ class Repository extends BaseRepository
     public function getPaginatedCommits($file = null, $page = 0)
     {
         $page = 15 * $page;
-        $pager = "--skip=$page --max-count=15";
+        $pager = "--skip=$page";
         $command =
                   "log $pager --pretty=format:\"<item><hash>%H</hash>"
                 . "<short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents>"
