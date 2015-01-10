@@ -61,7 +61,6 @@ class ArcheolexController implements ControllerProviderInterface
                 'path'           => $file ? $file . '/' : $file,
                 'commits'        => $categorized,
                 'stats'          => $stats,
-                'debug'          => substr($repo,-4),
                 'authors'        => $authors,
                 'file'           => $file,
                 'files'          => $files->output(),
