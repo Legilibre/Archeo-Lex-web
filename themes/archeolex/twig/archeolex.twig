@@ -1,47 +1,52 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'historique' %}
+{% set titre = repo | replace({'codes/': '', '\.git': '', '_':' '}) | capitalize %}
+{% macro date_fr(date) %}
+{{date | date('j F Y') | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
+{% endmacro %}
+{% import _self as macros %}
 
-{% block title %}GitList{% endblock %}
+{% block title %}{{ titre }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo | replace({'codes/': '', '\.git':'', '_':' '}) | capitalize }}</h1>
+<h1>{{ titre }}</h1>
 <hr />
 
-<table style="margin-left: 5em;">
-<tr>
-    <td>
-{% if commits %}
+{% if commits and files %}
+<div id="archeo-contenu" style="">
+<div id="archeo-stats-small">
+    <a href="{{ path('blob', {repo: repo, commitishPath: branch ~ '/' ~ path ~ files|first.name}) }}" style="font-size: 200%">Texte actuel</a>
+    <br /><br />
+    {{ commits|first|length }} versions
+    <br /><br />
+    Du {{ macros.date_fr(commits|first|last.date) }} au {{ macros.date_fr(commits|first|first.date) }}
+    <br /><br />
+    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
+</div>
+<div id="archeo-versions">
 {% for date, commit in commits %}
 Versions :
 <ul>
 {% for item in commit %}
-    <li style="margin-top: 2px;"><a href="{{ path('blob', {repo: repo, commitishPath: item.hash ~'/' ~ (repo | replace({'codes/': '', '\.git':'.md', 'é':'e'}) | capitalize )}) }}">{{ item.message | replace({'Version consolidée au ':''}) }}</a> (<a href="{{ path('commit', {repo: repo, commit: item.hash}) }}">diff</a>)</li>
+    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: item.date | date('Y-m-d')}) }}">{{ macros.date_fr(item.date) }}</a> (<a href="{{ path('commit', {repo: repo, commit: item.hash}) }}">diff</a>)
 {% endfor %}
 </ul>
 {% endfor %}
+</div>
+<div id="archeo-stats-large">
+    <a href="{{ path('blob', {repo: repo, commitishPath: branch ~ '/' ~ path ~ files|first.name}) }}" style="font-size: 200%">Texte actuel</a>
+    <br /><br />
+    {{ commits|first|length }} versions
+    <br /><br />
+    Du {{ macros.date_fr(commits|first|last.date) }} au {{ macros.date_fr(commits|first|first.date) }}
+    <br /><br />
+    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
+</div>
+</div>
 {% else %}
 <p>Aucun résultat trouvé.</p>
 {% endif %}
-</td>
-<td valign="top"><div style="margin-left: 5em">
-    {% if files is not empty %}
-        {% for file in files %}
-            <a href="{{ path('blob', {repo: repo, commitishPath: branch ~ '/' ~ path ~ file.name}) }}" style="font-size: 200%">Texte actuel</a>
-        {% endfor %}
-        <br />
-        {% for author in authors %}
-            {{ author.commits }} versions
-        {% endfor %}
-        <br />
-        Git : <input type="text" value="http://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
-    {% else %}
-        <p>Ce dépôt est vide.</p>
-    {% endif %}
-</div></td>
-</tr>
-</table>
-
 
     <hr />
 
