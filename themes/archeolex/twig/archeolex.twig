@@ -22,7 +22,7 @@
     <br /><br />
     Du {{ macros.date_fr(commits|first|last.date) }} au {{ macros.date_fr(commits|first|first.date) }}
     <br /><br />
-    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
+    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>
 <div id="archeo-versions">
 {% for date, commit in commits %}
@@ -41,7 +41,7 @@ Versions :
     <br /><br />
     Du {{ macros.date_fr(commits|first|last.date) }} au {{ macros.date_fr(commits|first|first.date) }}
     <br /><br />
-    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
+    Git : <input type="text" id="gitrepo-address" value="http://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>
 </div>
 {% else %}
