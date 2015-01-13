@@ -5,7 +5,8 @@
 {% block title %}GitList{% endblock %}
 
 {% block content %}
-    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: "Version #{commit.hash}", path:''}]} %}
+<h1>{{ repo | replace({'codes/': '', '\.git':'', '_':' '}) | capitalize }}</h1>
+<hr />
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -17,20 +18,6 @@
             {% if commit.body is not empty %}
             <p>{{ commit.body | nl2br }}</p>
             {% endif %}
-            <img src="{{ avatar(commit.author.email, 32) }}" class="pull-left space-right" />
-            <span>
-                créé par <a href="mailto:{{ commit.author.email }}">{{ commit.author.name }}</a> le {{ commit.date | format_date }}
-                {% if commit.author.email != commit.commiter.email %}
-                &bull; validé par <a href="mailto:{{ commit.commiter.email }}">{{ commit.commiter.name }}</a> le {{ commit.commiterDate | format_date }}
-                {% endif %}
-                <br />Voici les {{ commit.changedFiles }} fichiers modifiés
-            </span>
-            <hr>
-            <ul class="commit-list">
-                {% for diff in commit.diffs %}
-                    <li><i class="fa fa-file-text-o"></i> <a href="#diff-{{ loop.index }}">{{ diff.file }}</a> <span class="meta pull-right">{{ diff.index }}</span></li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 
@@ -40,8 +27,8 @@
             <div class="meta"><a id="diff-{{ loop.index }}">{{ diff.file }}</a></div>
 
             <div class="btn-group pull-right">
-                <a href="{{ path('commits', {repo: repo, commitishPath: commit.hash ~ '/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list-alt"></span> Historique</a>
-                <a href="{{ path('blob', {repo: repo, commitishPath: commit.hash ~'/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir le fichier @ {{ commit.shortHash }}</a>
+                <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list-alt"></span> Historique</a>
+                <a href="{{ path('blob', {repo: repo, commitishPath: commit.hash ~'/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
             </div>
         </div>
 
