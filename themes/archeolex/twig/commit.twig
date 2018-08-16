@@ -16,8 +16,9 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    {% for diff in commit.diffs %}
+    <div class="source-view">
+        <div class="source-header">
             <div class="btn-group pull-right">
                 <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
                 <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
@@ -25,15 +26,6 @@
             </div>
             <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
         </div>
-        <div class="panel-body">
-            {% if commit.body is not empty %}
-            <p>{{ commit.body | nl2br }}</p>
-            {% endif %}
-        </div>
-    </div>
-
-    {% for diff in commit.diffs %}
-    <div class="source-view">
         <div class="source-diff">
         <table>
         {% for line in diff.getLines %}
