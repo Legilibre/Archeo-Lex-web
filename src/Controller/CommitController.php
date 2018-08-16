@@ -114,6 +114,7 @@ class CommitController implements ControllerProviderInterface
                 ->parseCommitishPathParam($commitishPath, $repo);
 
             list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+            $commit = $repository->getCommit(substr($commitishPath, 0, 40));
 
             $blames = $repository->getBlame("$branch -- \"$file\"");
 
@@ -122,6 +123,7 @@ class CommitController implements ControllerProviderInterface
                 'repo' => $repo,
                 'branch' => $branch,
                 'branches' => $repository->getBranches(),
+                'commit' => $commit,
                 'tags' => $repository->getTags(),
                 'blames' => $blames,
             ));
