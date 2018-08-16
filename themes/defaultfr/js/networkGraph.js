@@ -183,7 +183,7 @@
 		function getDateString( date )  {
 			return twoDigits( date.getDate() )	+ '/'
 				+ twoDigits( date.getMonth() + 1 ) + '/'
-				+ date.getFullYear() + ' at '
+				+ date.getFullYear() + ' à '
 				+ twoDigits(date.getHours()) + ':'
 				+ twoDigits(date.getMinutes()) + ':'
 				+ twoDigits(date.getSeconds());
@@ -208,8 +208,9 @@
 		 * @return that
 		 */
 		that.setCommit = function( commit ) {
+			dateDisplay.html( 'créé par ' );
 			setAuthor( commit.author );
-			dateDisplay.html( ' authored on ' + getDateString( commit.date ) );
+			dateDisplay.html( ' le ' + getDateString( commit.date ) );
 			messageDisplay.html( commit.message );
 			return that;
 		};

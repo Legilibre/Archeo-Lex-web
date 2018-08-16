@@ -5,10 +5,10 @@
 {% block title %}GitList{% endblock %}
 
 {% block content %}
-    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: 'Network', path:''}]} %}
+    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: 'Réseau', path:''}]} %}
 	<div class="network-view">
 		<div class="network-header">
-			<h4 class="meta">Network Graph of {{ repo }} / {{ commitishPath }}</h4>
+			<h4 class="meta">Graphe du réseau de {{ repo }} / {{ commitishPath }}</h4>
 		</div>
 
 		<div class="network-graph" data-source="{{ path('networkData', {repo: repo, commitishPath: commitishPath}) }}">

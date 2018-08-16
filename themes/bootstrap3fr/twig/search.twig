@@ -10,10 +10,10 @@
             <div class="pull-right">
                 <div class="btn-group download-buttons">
                     {% if show_http_remote or show_ssh_remote %}
-                    <a type="button" href="#" class="btn btn-default btn-xs" title="Show remotes to clone this repository." id="clone-button-show">Clone</a>
+                    <a type="button" href="#" class="btn btn-default btn-xs" title="Show remotes to clone this repository." id="clone-button-show">Cloner</a>
                     {% endif %}
-                    <a type="button" href="{{ path('archive', {repo: repo, branch: branch, format: 'zip'}) }}" class="btn btn-default btn-xs" title="Download '{{ branch }}' as a ZIP archive">ZIP</a>
-                    <a type="button" href="{{ path('archive', {repo: repo, branch: branch, format: 'tar'}) }}" class="btn btn-default btn-xs" title="Download '{{ branch }}' as a TAR archive">TAR</a>
+                    <a type="button" href="{{ path('archive', {repo: repo, branch: branch, format: 'zip'}) }}" class="btn btn-default btn-xs" title="Télécharger '{{ branch }}' en archive ZIP">ZIP</a>
+                    <a type="button" href="{{ path('archive', {repo: repo, branch: branch, format: 'tar'}) }}" class="btn btn-default btn-xs" title="Télécharger '{{ branch }}' en archive TAR">TAR</a>
                 </div>
 		        <div class="download-buttons rss-button">
 		            <a href="{{ path('rss', {repo: repo, branch: branch}) }}"><span class="fa fa-rss rss-icon"></span></a>
@@ -26,8 +26,8 @@
     <table class="table tree search">
         <thead>
             <tr>
-                <th width="20%">Name</th>
-                <th width="80%">Match</th>
+                <th width="20%">Nom</th>
+                <th width="80%">Correspondance</th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@
         </tbody>
     </table>
     {% else %}
-    <p>No results found.</p>
+    <p>Aucun résultat trouvé.</p>
     {% endif %}
 
     <hr />

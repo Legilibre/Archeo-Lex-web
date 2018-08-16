@@ -1,9 +1,9 @@
 <div class="btn-group pull-left space-right" id="branchList">
-    <button class="btn dropdown-toggle" data-toggle="dropdown">browsing: <strong>{{ branch }}</strong> <span class="caret"></span></button>
+    <button class="btn dropdown-toggle" data-toggle="dropdown">naviguer : <strong>{{ branch }}</strong> <span class="caret"></span></button>
 
     <div class="dropdown-menu">
         <div class="search">
-            <input class="search" placeholder="Filter branch/tags" autofocus>
+            <input class="search" placeholder="Filtrer les branches/étiquettes" autofocus>
         </div>
     <ul class="unstyled list">
     <li class="dropdown-header">Branches</li>
@@ -11,7 +11,7 @@
         <li><a href="{{ path('branch', {repo: repo, branch: item}) }}"><span class="item">{{ item }}</span></a></li>
     {% endfor %}
     {% if tags %}
-    <li class="dropdown-header">Tags</li>
+    <li class="dropdown-header">Étiquettes</li>
     {% for item in tags %}
         <li><a href="{{ path('branch', {repo: repo, branch: item}) }}"><span class="item">{{ item }}</span></a></li>
     {% endfor %}

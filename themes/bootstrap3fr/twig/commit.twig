@@ -5,12 +5,12 @@
 {% block title %}GitList{% endblock %}
 
 {% block content %}
-    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: "Commit #{commit.hash}", path:''}]} %}
+    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: "Version #{commit.hash}", path:''}]} %}
 
     <div class="panel panel-default">
         <div class="panel-heading">
             <span class="pull-right">
-                <a class="btn btn-default btn-sm" href="{{ path('branch', {repo: repo, branch: commit.hash}) }}" title="Browse code at this point in history"><span class="fa fa-list-alt"></span> Browse code</a></span>
+                <a class="btn btn-default btn-sm" href="{{ path('branch', {repo: repo, branch: commit.hash}) }}" title="Naviguer dans le code à ce moment de l’historique"><span class="fa fa-list-alt"></span> Naviguer dans le code</a></span>
             <h4>{{ commit.message }}</h4>
         </div>
         <div class="panel-body">
@@ -19,11 +19,11 @@
             {% endif %}
             <img src="{{ avatar(commit.author.email, 32) }}" class="pull-left space-right" />
             <span>
-                <a href="mailto:{{ commit.author.email }}">{{ commit.author.name }}</a> authored on {{ commit.date | format_date }}
+                créé par <a href="mailto:{{ commit.author.email }}">{{ commit.author.name }}</a> le {{ commit.date | format_date }}
                 {% if commit.author.email != commit.commiter.email %}
-                &bull; <a href="mailto:{{ commit.commiter.email }}">{{ commit.commiter.name }}</a> committed on {{ commit.commiterDate | format_date }}
+                &bull; validé par <a href="mailto:{{ commit.commiter.email }}">{{ commit.commiter.name }}</a> le {{ commit.commiterDate | format_date }}
                 {% endif %}
-                <br />Showing {{ commit.changedFiles }} changed files
+                <br />Voici les {{ commit.changedFiles }} fichiers modifiés
             </span>
             <hr>
             <ul class="commit-list">
@@ -40,8 +40,8 @@
             <div class="meta"><a id="diff-{{ loop.index }}">{{ diff.file }}</a></div>
 
             <div class="btn-group pull-right">
-                <a href="{{ path('commits', {repo: repo, commitishPath: commit.hash ~ '/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list-alt"></span> History</a>
-                <a href="{{ path('blob', {repo: repo, commitishPath: commit.hash ~'/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> View file @ {{ commit.shortHash }}</a>
+                <a href="{{ path('commits', {repo: repo, commitishPath: commit.hash ~ '/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list-alt"></span> Historique</a>
+                <a href="{{ path('blob', {repo: repo, commitishPath: commit.hash ~'/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir le fichier @ {{ commit.shortHash }}</a>
             </div>
         </div>
 

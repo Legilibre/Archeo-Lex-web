@@ -10,10 +10,10 @@
             <div class="pull-right">
                 <div class="btn-group download-buttons">
                     {% if show_http_remote or show_ssh_remote %}
-                    <a href="#" class="btn btn-mini" title="Show remotes to clone this repository." id="clone-button-show">Clone</a>
+                    <a href="#" class="btn btn-mini" title="Voir les adresses pour cloner ce dépôt." id="clone-button-show">Clone</a>
                     {% endif %}
-                    <a href="{{ path('archive', {repo: repo, branch: branch, format: 'zip'}) }}" class="btn btn-mini" title="Download '{{ branch }}' as a ZIP archive">ZIP</a>
-                    <a href="{{ path('archive', {repo: repo, branch: branch, format: 'tar'}) }}" class="btn btn-mini" title="Download '{{ branch }}' as a TAR archive">TAR</a>
+                    <a href="{{ path('archive', {repo: repo, branch: branch, format: 'zip'}) }}" class="btn btn-mini" title="Télécharger '{{ branch }}' en archive ZIP">ZIP</a>
+                    <a href="{{ path('archive', {repo: repo, branch: branch, format: 'tar'}) }}" class="btn btn-mini" title="Télécharger '{{ branch }}' en archive TAR">TAR</a>
                 </div>
                 <a href="{{ path('rss', {repo: repo, branch: branch}) }}" class="rss-icon"><i class="rss"></i></a>
             </div>
@@ -45,9 +45,9 @@
     <table class="tree">
         <thead>
             <tr>
-                <th width="80%">name</th>
+                <th width="80%">nom</th>
                 <th width="10%">mode</th>
-                <th width="10%">size</th>
+                <th width="10%">taille</th>
             </tr>
         </thead>
         <tbody>
@@ -80,7 +80,7 @@
         </tbody>
     </table>
     {% else %}
-        <p>This repository is empty.</p>
+        <p>Ce dépôt est vide.</p>
     {% endif %}
     {% if readme is defined and readme is not empty %}
         <div class="readme-view">
