@@ -93,6 +93,16 @@ class ArcheolexController implements ControllerProviderInterface
             list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
 
             $blob = $repository->getBlob("$branch:\"$file\"");
+
+            try {
+                $blob->getOutput();
+            } catch( \Throwable $e ) {
+                $commitishPath = str_replace( '-', '_', $commitishPath ); // Try with _ instead of -
+                list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
+                list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+                $blob = $repository->getBlob("$branch:\"$file\"");
+            }
+
             $breadcrumbs = $app['util.view']->getBreadcrumbs($file);
             $fileType = $app['util.repository']->getFileType($file);
 
