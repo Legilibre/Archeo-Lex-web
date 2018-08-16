@@ -10,6 +10,13 @@
 <hr />
 
     <div class="panel panel-default">
+        <div class="panel-body">
+            <p>Ci-dessous sont présentées les modifications introduites à la date donnée. L’ancien texte est en rouge, le texte introduit à cette date est en vert.</p>
+            <p>Si les lignes sont trop longues, un ascenseur vertical est disponible en fin de page.</p>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
         <div class="panel-heading">
             <div class="btn-group pull-right">
                 <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>

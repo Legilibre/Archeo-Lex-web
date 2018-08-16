@@ -29,7 +29,7 @@
 Versions :
 <ul>
 {% for item in commit %}
-    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: item.date | date('Y-m-d')}) }}">{{ macros.date_fr(item.date) }}</a> (<a href="{{ path('commit', {repo: repo, commit: item.hash}) }}">diff</a>)
+    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: item.date | date('Y-m-d')}) }}">{{ macros.date_fr(item.date) }}</a> (<a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: item.date | date('Y-m-d')}) }}">modifications</a>)
 {% endfor %}
 </ul>
 {% endfor %}
