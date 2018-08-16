@@ -12,8 +12,8 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="btn-group pull-right">
-                <a href="{{ path('blob', {repo: repo | replace({'.git': ''}), commitishPath: commit.hash ~'/' ~ diff.file}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
-                <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list-alt"></span> Historique</a>
+                <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
+                <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
             </div>
             <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
         </div>
