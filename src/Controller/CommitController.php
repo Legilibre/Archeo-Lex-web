@@ -12,6 +12,9 @@ class CommitController implements ControllerProviderInterface
     {
         $route = $app['controllers_factory'];
 
+        $repos = $app['util.routing']->getRepositoryRegex();
+        $repos = $repos . '|' . preg_replace('/\\\.git/', '(\\.git)?', $repos);
+
         $route->get('{repo}/commits/search', function (Request $request, $repo) use ($app) {
             $subRequest = Request::create(
                 '/' . $repo . '/commits/master/search',
@@ -90,7 +93,7 @@ class CommitController implements ControllerProviderInterface
           ->convert('branch', 'escaper.argument:escape')
           ->bind('searchcommits');
 
-        $route->get('{repo}/commit/{commit}', function ($repo, $commit) use ($app) {
+        $route->get('{repo}/commit/{commit}', $commitController = function ($repo, $commit) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
             $commit = $repository->getCommit($commit);
             $branch = $repository->getHead();
@@ -104,7 +107,7 @@ class CommitController implements ControllerProviderInterface
           ->assert('commit', '[a-f0-9^]+')
           ->bind('commit');
 
-        $route->get('{repo}/blame/{commitishPath}', function ($repo, $commitishPath) use ($app) {
+        $route->get('{repo}/blame/{commitishPath}', $blameController = function ($repo, $commitishPath) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
 
             list($branch, $file) = $app['util.routing']
@@ -126,6 +129,64 @@ class CommitController implements ControllerProviderInterface
           ->assert('commitishPath', $app['util.routing']->getCommitishPathRegex())
           ->convert('commitishPath', 'escaper.argument:escape')
           ->bind('blame');
+
+        // Commit with date
+        $route->get('{repo}/{version}/modifications', function ($repo, $version) use ($app, $commitController) {
+            if (substr($repo,-4) != '.git') {
+                $repo .= '.git';
+            }
+            $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
+
+            $commitishPath = $repository->getHead();
+            list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
+            list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+
+            $type = $file ? "$branch -- \"$file\"" : $branch;
+            $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
+            $commits = $repository->getPaginatedCommits($type, $pager['current']);
+            $categorized = array();
+
+            foreach ($commits as $commit) {
+                $date = $commit->getDate();
+                $date = $date->format('Y-m-d');
+                $categorized[$date][] = $commit;
+            }
+            $commitishPath = $categorized[$version][0]->getHash();
+
+            return $commitController( $repo, $commitishPath );
+        })->assert('repo', $repos)
+          ->assert('version', '\d{4}-\d{2}-\d{2}')
+          ->bind('commitversion');
+
+        // Blame with date
+        $route->get('{repo}/{version}/annotations', function ($repo, $version) use ($app, $blameController) {
+            if (substr($repo,-4) != '.git') {
+                $repo .= '.git';
+            }
+            $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
+
+            $commitishPath = $repository->getHead();
+            list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
+            list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+
+            $type = $file ? "$branch -- \"$file\"" : $branch;
+            $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
+            $commits = $repository->getPaginatedCommits($type, $pager['current']);
+            $categorized = array();
+
+            foreach ($commits as $commit) {
+                $date = $commit->getDate();
+                $date = $date->format('Y-m-d');
+                $categorized[$date][] = $commit;
+            }
+            $commitishPath = $categorized[$version][0]->getHash() .
+                '/' . ucfirst(preg_replace(array('/codes\//','/\.git/','/é/', '/-/'), array('','.md','e', '_'), $repo));
+
+            return $blameController( $repo, $commitishPath );
+        })->assert('repo', $repos)
+          ->assert('version', '\d{4}-\d{2}-\d{2}')
+          ->bind('blameversion');
+
 
         return $route;
     }

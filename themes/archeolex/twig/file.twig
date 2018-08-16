@@ -15,9 +15,9 @@
 
             <div class="btn-group pull-right">
                 <a href="{{ path('rawversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}" class="btn btn-default btn-sm"><span class="fa fa-file-text-o"></span> Texte brut</a>
-                <a href="{{ path('blame', {repo: repo, commitishPath: branch ~ '/' ~ file}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
-                <a href="{{ path('commit', {repo: repo, commit: branch}) }}" class="btn btn-default btn-sm"><span class="fa fa-cut"></span> Modifications</a>
-                <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}" class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
+                <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
+                <a href="{{ path('commitversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}" class="btn btn-default btn-sm"><span class="fa fa-cut"></span> Modifications</a>
+                <a href="{{ path('summaryrepo', {repo: repo|replace({'.git': ''})}) }}" class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
             </div>
             <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
         </div>
