@@ -129,7 +129,7 @@ class Repository extends BaseRepository
     public function getBlame($file)
     {
         $blame = array();
-        $logs = $this->getClient()->run($this, "blame --root -sl $file");
+        $logs = $this->getClient()->run($this, "blame --root -l $file");
         $logs = explode("\n", $logs);
 
         $i = 0;
@@ -139,7 +139,7 @@ class Repository extends BaseRepository
                 continue;
             }
 
-            preg_match_all("/([a-zA-Z0-9]{40})\s+.*?([0-9]+)\)(.+)/", $log, $match);
+            preg_match_all("/([a-zA-Z0-9]{40}) .*? (\d{4}-\d{2}-\d{2}) \d{2}:\d{2}:\d{2} [+-]\d{4}\s+[0-9]+\) (.*)/", $log, $match);
 
             $currentCommit = $match[1][0];
             if ($currentCommit != $previousCommit) {
@@ -147,6 +147,7 @@ class Repository extends BaseRepository
                 $blame[$i] = array(
                     'line' => '',
                     'commit' => $currentCommit,
+                    'date' => $match[2][0],
                     'commitShort' => substr($currentCommit, 0, 8),
                 );
             }

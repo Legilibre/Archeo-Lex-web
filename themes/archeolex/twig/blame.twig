@@ -6,7 +6,14 @@
 {% block title %}{{ titre }} - Archéo Lex{% endblock %}
 
 {% block content %}
-    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: 'Blamer', path:''}]} %}
+    {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: 'Texte annoté', path:''}]} %}
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p>Le texte est annoté de façon à retrouver quand ont été introduites ou modifiées les dispositions.</p>
+            <p>La colonne de gauche comporte la date de la plus récente modification, ainsi qu’un lien vers le détail des autres modifications à cette date.</p>
+        </div>
+    </div>
 
     <div class="source-view">
         <div class="source-header">
@@ -16,7 +23,7 @@
             <table class="blame-view">
             {% for blame in blames %}
                 <tr>
-                    <td class="commit"><a href="{{ path('commit', {repo: repo, commit: blame.commit}) }}">{{ blame.commitShort }}</a></td>
+                    <td class="commit"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: blame.date}) }}">{{ blame.date }}</a></td>
                     <td><pre>{{ blame.line }}</pre></td>
                 </tr>
             {% endfor %}
