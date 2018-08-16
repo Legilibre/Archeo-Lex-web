@@ -14,7 +14,7 @@
             <div class="meta"></div>
 
             <div class="btn-group pull-right">
-                <a href="{{ path('blob_raw', {repo: repo, commitishPath: branch ~ '/' ~ file}) }}" class="btn btn-default btn-sm"><span class="fa fa-file-text-o"></span> Texte brut</a>
+                <a href="{{ path('rawversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d')}) }}" class="btn btn-default btn-sm"><span class="fa fa-file-text-o"></span> Texte brut</a>
                 <a href="{{ path('blame', {repo: repo, commitishPath: branch ~ '/' ~ file}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
                 <a href="{{ path('commit', {repo: repo, commit: branch}) }}" class="btn btn-default btn-sm"><span class="fa fa-cut"></span> Modifications</a>
                 <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}" class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>

@@ -12,6 +12,9 @@ class BlobController implements ControllerProviderInterface
     {
         $route = $app['controllers_factory'];
 
+        $repos = $app['util.routing']->getRepositoryRegex();
+        $repos = $repos . '|' . preg_replace('/\\\.git/', '(\\.git)?', $repos);
+
         $route->get('{repo}/blob/{commitishPath}', function ($repo, $commitishPath) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
 
@@ -46,7 +49,7 @@ class BlobController implements ControllerProviderInterface
           ->convert('commitishPath', 'escaper.argument:escape')
           ->bind('blob');
 
-        $route->get('{repo}/raw/{commitishPath}', function ($repo, $commitishPath) use ($app) {
+        $route->get('{repo}/raw/{commitishPath}', $rawVersionController = function ($repo, $commitishPath) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
 
             list($branch, $file) = $app['util.routing']
@@ -89,6 +92,35 @@ class BlobController implements ControllerProviderInterface
             ->assert('commitishPath', '.+')
             ->convert('commitishPath', 'escaper.argument:escape')
             ->bind('logpatch');
+
+        // Raw with date
+        $route->get('{repo}/{version}/brut', function ($repo, $version) use ($app, $rawVersionController) {
+            if (substr($repo,-4) != '.git') {
+                $repo .= '.git';
+            }
+            $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
+
+            $commitishPath = $repository->getHead();
+            list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
+            list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+
+            $type = $file ? "$branch -- \"$file\"" : $branch;
+            $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
+            $commits = $repository->getPaginatedCommits($type, $pager['current']);
+            $categorized = array();
+
+            foreach ($commits as $commit) {
+                $date = $commit->getDate();
+                $date = $date->format('Y-m-d');
+                $categorized[$date][] = $commit;
+            }
+            $commitishPath = $categorized[$version][0]->getHash() .
+                '/' . ucfirst(preg_replace(array('/codes\//','/\.git/','/é/', '/-/'), array('','.md','e', '_'), $repo));
+
+            return $rawVersionController( $repo, $commitishPath );
+        })->assert('repo', $repos)
+          ->assert('version', '\d{4}-\d{2}-\d{2}')
+          ->bind('rawversion');
 
         return $route;
     }
