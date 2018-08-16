@@ -91,6 +91,7 @@ class ArcheolexController implements ControllerProviderInterface
 
             list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
             list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+            $commit = $repository->getCommit(substr($commitishPath, 0, 40));
 
             $blob = $repository->getBlob("$branch:\"$file\"");
 
@@ -119,6 +120,7 @@ class ArcheolexController implements ControllerProviderInterface
                 'blob'           => $blob->output(),
                 'repo'           => $repo,
                 'branch'         => $branch,
+                'commit'         => $commit,
                 'breadcrumbs'    => $breadcrumbs,
                 'branches'       => $repository->getBranches(),
                 'tags'           => $repository->getTags(),
