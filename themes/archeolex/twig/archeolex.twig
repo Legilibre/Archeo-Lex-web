@@ -1,7 +1,7 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'historique' %}
-{% set titre = repo | replace({'codes/': '', '\.git': '', '_':' ', '-':' '}) | capitalize %}
+{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 {% macro date_fr(date) %}
 {{date | date('j F Y') | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
 {% endmacro %}

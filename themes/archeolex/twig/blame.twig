@@ -1,8 +1,9 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'commits' %}
+{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 
-{% block title %}GitList{% endblock %}
+{% block title %}{{ titre }} - Archéo Lex{% endblock %}
 
 {% block content %}
     {% include 'breadcrumb.twig' with {breadcrumbs: [{dir: 'Blamer', path:''}]} %}

@@ -1,11 +1,12 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'files' %}
+{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 
-{% block title %}GitList{% endblock %}
+{% block title %}{{ titre }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo | replace({'codes/': '', '\.git':'', '_':' ', '-':' '}) | capitalize }}</h1>
+<h1>{{ repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize }}</h1>
 <hr />
 
     <div class="source-view">
