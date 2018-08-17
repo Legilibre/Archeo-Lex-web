@@ -31,8 +31,8 @@
             <table class="blame-view">
             {% for blame in blames %}
                 <tr>
-                    <td class="commit"><a href="{{ path('commitversion', {repo: repo|replace({'.git': ''}), version: blame.date}) }}">{{ blame.date }}</a></td>
-                    <td class="commit"><a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: blame.date}) }}"><span class="fa fa-bullhorn"></span></a></td>
+                    <td class="commit"><a href="{{ path('commitversion', {repo: repo|replace({'.git': ''}), version: blame.date|date('Y-m-d')}) }}">{{ blame.date }}</a></td>
+                    <td class="commit"><a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: blame.date|date('Y-m-d')}) }}"><span class="fa fa-bullhorn"></span></a></td>
                     <td><pre>{{ blame.line }}</pre></td>
                 </tr>
             {% endfor %}
