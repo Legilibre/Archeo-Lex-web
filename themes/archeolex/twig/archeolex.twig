@@ -16,13 +16,17 @@
 {% if commits and files %}
 <div id="archeo-contenu" style="">
 <div id="archeo-stats-small">
-    <a href="{{ path('blob', {repo: repo, commitishPath: branch ~ '/' ~ path ~ files|first.name}) }}" style="font-size: 200%">Texte actuel</a>
+    <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first|first.date|date('Y-m-d')}) }}" style="font-size: 200%">Texte actuel</a>
     <br /><br />
     {{ commits|first|length }} versions
     <br /><br />
     Du {{ macros.date_fr(commits|first|last.date) }} au {{ macros.date_fr(commits|first|first.date) }}
     <br /><br />
+    Date de mise à jour : {% if commits|first|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first|first.commiterDate) }} à {{ commits|first|first.commiterDate|date('H:i:s (T)') }}{% else %}inconnue{% endif %}
+    <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
+    <br /><br />
+    NB : les dates avant 1970 sont erronément affichées et peuvent apparaître soit comme le 1er janvier 1970 soit comme des dates aléatoires entre 2015 et 2030.
 </div>
 <div id="archeo-versions">
 {% for date, commit in commits %}
@@ -45,7 +49,7 @@ Versions :
     <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
     <br /><br />
-    NB : les dates avant 1970 sont erronément affichées et apparaissent comme des dates aléatoires entre 2015 et 2030.
+    NB : les dates avant 1970 sont erronément affichées et peuvent apparaître soit comme le 1er janvier 1970 soit comme des dates aléatoires entre 2015 et 2030.
 </div>
 </div>
 {% else %}
