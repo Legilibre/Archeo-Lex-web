@@ -142,7 +142,11 @@ class Repository extends BaseRepository
             preg_match_all("/([a-zA-Z0-9]{40}) .*? (\d{4}-\d{2}-\d{2}) \d{2}:\d{2}:\d{2} [+-]\d{4}\s+[0-9]+\) (.*)/", $log, $match);
 
             $currentCommit = $match[1][0];
-            if ($currentCommit != $previousCommit) {
+            # By definition empty lines never change and are always older the surrounding text: as a consequence
+            # even if both surrounding text are modified in the same commit, they will appear fragmented by the
+            # intermediairy line; to avoid such unsignificant fragmentation, it is added the second condition (note
+            # also the condition at the end of the loop)
+            if ($currentCommit != $previousCommit && ($match[3][0] || $i == 0)) {
                 ++$i;
                 $blame[$i] = array(
                     'line' => '',
@@ -153,7 +157,9 @@ class Repository extends BaseRepository
             }
 
             $blame[$i]['line'] .= $match[3][0] . PHP_EOL;
-            $previousCommit = $currentCommit;
+            if ($match[3][0] || $i == 1) {
+                $previousCommit = $currentCommit;
+            }
         }
 
         return $blame;
