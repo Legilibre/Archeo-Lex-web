@@ -115,7 +115,7 @@ class BlobController implements ControllerProviderInterface
                 $categorized[$date][] = $commit;
             }
             $commitishPath = $categorized[$version][0]->getHash() .
-                '/' . ucfirst(preg_replace(array('/codes\//','/\.git/','/é/', '/-/'), array('','.md','e', '_'), $repo));
+                '/' . lcfirst(preg_replace(array('/codes\//','/\.git/','/-/'), array('','.md','_'), $repo));
 
             return $rawVersionController( $repo, $commitishPath );
         })->assert('repo', $repos)

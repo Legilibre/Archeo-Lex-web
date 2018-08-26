@@ -182,7 +182,7 @@ class CommitController implements ControllerProviderInterface
                 $categorized[$date][] = $commit;
             }
             $commitishPath = $categorized[$version][0]->getHash() .
-                '/' . ucfirst(preg_replace(array('/codes\//','/\.git/','/é/', '/-/'), array('','.md','e', '_'), $repo));
+                '/' . lcfirst(preg_replace(array('/codes\//','/\.git/','/-/'), array('','.md','_'), $repo));
 
             return $blameController( $repo, $commitishPath );
         })->assert('repo', $repos)
