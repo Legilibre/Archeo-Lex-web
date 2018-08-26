@@ -32,7 +32,7 @@
 Versions :
 <ul>
 {% for commit in commits %}
-    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date | date('Y-m-d', false)}) }}">{{ macros.date_fr(commit.date) }}</a> // <a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: commit.date | date('Y-m-d', false)}) }}">modifications</a>
+    <li style="margin-top: 2px;"><a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: commit.date | date('Y-m-d', false)}) }}">{{ macros.date_fr(commit.date) }}</a> - <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date | date('Y-m-d', false)}) }}">texte entier</a></li>
 {% endfor %}
 </ul>
 </div>
