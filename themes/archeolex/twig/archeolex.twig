@@ -3,7 +3,7 @@
 {% set page = 'historique' %}
 {% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 {% macro date_fr(date) %}
-{{date | date('j F Y') | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
+{{date | date('j F Y', false) | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
 {% endmacro %}
 {% import _self as macros %}
 
@@ -16,13 +16,13 @@
 {% if commits and files %}
 <div id="archeo-contenu" style="">
 <div id="archeo-stats-small">
-    <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first.date|date('Y-m-d')}) }}" style="font-size: 200%">Texte actuel</a>
+    <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first.date|date('Y-m-d', false)}) }}" style="font-size: 200%">Texte actuel</a>
     <br /><br />
     {{ commits|length }} versions
     <br /><br />
     Du {{ macros.date_fr(commits|last.date) }} au {{ macros.date_fr(commits|first.date) }}
     <br /><br />
-    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)') }}{% else %}inconnue{% endif %}-->inconnue
+    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
     <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
     <br /><br />
@@ -32,18 +32,18 @@
 Versions :
 <ul>
 {% for commit in commits %}
-    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date | date('Y-m-d')}) }}">{{ macros.date_fr(commit.date) }}</a> (<a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: commit.date | date('Y-m-d')}) }}">modifications</a>)
+    <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date | date('Y-m-d', false)}) }}">{{ macros.date_fr(commit.date) }}</a> // <a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: commit.date | date('Y-m-d', false)}) }}">modifications</a>
 {% endfor %}
 </ul>
 </div>
 <div id="archeo-stats-large">
-    <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first.date|date('Y-m-d')}) }}" style="font-size: 200%">Texte actuel</a>
+    <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first.date|date('Y-m-d', false)}) }}" style="font-size: 200%">Texte actuel</a>
     <br /><br />
     {{ commits|length }} versions
     <br /><br />
     Du {{ macros.date_fr(commits|last.date) }} au {{ macros.date_fr(commits|first.date) }}
     <br /><br />
-    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)') }}{% else %}inconnue{% endif %}-->inconnue
+    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
     <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
     <br /><br />

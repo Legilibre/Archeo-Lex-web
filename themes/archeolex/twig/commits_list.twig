@@ -1,7 +1,7 @@
 {% if commits %}
 {% for date, commit in commits %}
 <div class="panel panel-default">
-    <div class="panel-heading bold">{{ date | date("j ") | replace({"1 ":"1er "}) }}{{ date | date("n") | replace({"1":"janvier","2":"février","3":"mars","4":"avril","5":"mai","6":"juin","7":"juillet","8":"août","9":"septembre","10":"octobre","11":"novembre","12":"décembre"}) }} {{ date | date("Y") }}</div>
+    <div class="panel-heading bold">{{ date | date("j ", false) | replace({"1 ":"1er "}) }}{{ date | date("n", false) | replace({"1":"janvier","2":"février","3":"mars","4":"avril","5":"mai","6":"juin","7":"juillet","8":"août","9":"septembre","10":"octobre","11":"novembre","12":"décembre"}) }} {{ date | date("Y", false) }}</div>
     <table class="table table-striped table-bordered commits">
         <tbody>
             {% for item in commit %}
