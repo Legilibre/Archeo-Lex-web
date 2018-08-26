@@ -5,6 +5,7 @@ namespace GitList\Git;
 use Gitter\Model\Commit\Commit;
 use Gitter\Model\Commit\Diff;
 use Gitter\PrettyFormat;
+use Gitter\Util\DateTime;
 use Gitter\Repository as BaseRepository;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -200,17 +201,18 @@ class Repository extends BaseRepository
     public function getBlame($file)
     {
         $blame = array();
-        $logs = $this->getClient()->run($this, "blame --root -l $file");
+        $logs = $this->getClient()->run($this, "blame --root -l --date=iso $file");
         $logs = explode("\n", $logs);
 
         $i = 0;
         $previousCommit = '';
+        $missingDates = [];
         foreach ($logs as $log) {
             if ($log == '') {
                 continue;
             }
 
-            preg_match_all("/([a-zA-Z0-9]{40}) .*? (\d{4}-\d{2}-\d{2}) \d{2}:\d{2}:\d{2} [+-]\d{4}\s+[0-9]+\) (.*)/", $log, $match);
+            preg_match_all("/([a-zA-Z0-9]{40}) \(Législateur (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [+-]\d{4})\s+[0-9]+\) (.*)/", $log, $match);
 
             $currentCommit = $match[1][0];
             # By definition empty lines never change and are always older the surrounding text: as a consequence
@@ -219,10 +221,16 @@ class Repository extends BaseRepository
             # also the condition at the end of the loop)
             if ($currentCommit != $previousCommit && ($match[3][0] || $i == 0)) {
                 ++$i;
+                $date = null;
+                if( $match[2][0] != '1970-01-01 00:00:00 +0000' ) {
+                    $date = new DateTime( $match[2][0] );
+                } else {
+                    $missingDates[$match[1][0]] = null;
+                }
                 $blame[$i] = array(
                     'line' => '',
                     'commit' => $currentCommit,
-                    'date' => $match[2][0],
+                    'date' => $date,
                     'commitShort' => substr($currentCommit, 0, 8),
                 );
             }
@@ -230,6 +238,24 @@ class Repository extends BaseRepository
             $blame[$i]['line'] .= $match[3][0] . PHP_EOL;
             if ($match[3][0] || $i == 1) {
                 $previousCommit = $currentCommit;
+            }
+        }
+
+        foreach( $missingDates as $commit => &$date ) {
+            $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$commit);
+            if( preg_match('/^author Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
+                $date = new DateTime( '@'.$matches[1] );
+                $date->setTimezone( new \DateTimeZone( $matches[2] ) );
+            }
+        }
+
+        foreach( $blame as &$b ) {
+            if( !$b['date'] ) {
+                if( array_key_exists( $b['commit'], $missingDates ) ) {
+                    $b['date'] = $missingDates[$b['commit']];
+                } else {
+                    $b['date'] = new DateTime( '2309-01-01 12:00:00 +0200' );
+                }
             }
         }
 

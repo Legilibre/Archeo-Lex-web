@@ -31,7 +31,7 @@
             <table class="blame-view">
             {% for blame in blames %}
                 <tr>
-                    <td class="commit"><a href="{{ path('commitversion', {repo: repo|replace({'.git': ''}), version: blame.date|date('Y-m-d', false)}) }}">{{ blame.date }}</a></td>
+                    <td class="commit"><a href="{{ path('commitversion', {repo: repo|replace({'.git': ''}), version: blame.date|date('Y-m-d', false)}) }}">{{ blame.date|date('d/m/Y', false) }}</a></td>
                     <td class="commit"><a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: blame.date|date('Y-m-d', false)}) }}"><span class="fa fa-bullhorn"></span></a></td>
                     <td><pre>{{ blame.line }}</pre></td>
                 </tr>
