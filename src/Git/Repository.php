@@ -29,15 +29,23 @@ class Repository extends BaseRepository
         foreach ($logs as $log) {
             if (!$log['date']) {
                 $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$log['hash']);
-                if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                if( preg_match('/^author Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                     $log['date'] = $matches[1];
+                    $log['date_tz'] = new \DateTimeZone( $matches[2] );
                 }
-                if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                if( preg_match('/^committer Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                     $log['commiter_date'] = $matches[1];
+                    $log['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
                 }
             }
             $commit = new Commit();
             $commit->importData($log);
+            if( array_key_exists( 'date_tz', $log ) ) {
+                $commit->setDate( $commit->getDate()->setTimezone( $log['date_tz'] ) );
+            }
+            if( array_key_exists( 'commiter_date_tz', $log ) ) {
+                $commit->setCommiterDate( $commit->getCommiterDate()->setTimezone( $log['commiter_date_tz'] ) );
+            }
             $commits[] = $commit;
 
             foreach ($this->statistics as $statistic) {
@@ -148,15 +156,23 @@ class Repository extends BaseRepository
         $data = $format->parse($commitInfo);
         if (!$data[0]['date']) {
             $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$data[0]['hash']);
-            if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+            if( preg_match('/^author Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                 $data[0]['date'] = $matches[1];
+                $data[0]['date_tz'] = new \DateTimeZone( $matches[2] );
             }
-            if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+            if( preg_match('/^committer Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                 $data[0]['commiter_date'] = $matches[1];
+                $data[0]['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
             }
         }
         $commit = new Commit();
         $commit->importData($data[0]);
+        if( array_key_exists( 'date_tz', $data[0] ) ) {
+            $commit->setDate( $commit->getDate()->setTimezone( $data[0]['date_tz'] ) );
+        }
+        if( array_key_exists( 'commiter_date_tz', $data[0] ) ) {
+            $commit->setCommiterDate( $commit->getCommiterDate()->setTimezone( $data[0]['commiter_date_tz'] ) );
+        }
 
         if ($commit->getParentsHash()) {
             $command = 'diff ' . $commitHash . '~1..' . $commitHash;
@@ -338,15 +354,23 @@ class Repository extends BaseRepository
         foreach ($logs as $log) {
             if (!$log['date']) {
                 $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$log['hash']);
-                if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                if( preg_match('/^author Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                     $log['date'] = $matches[1];
+                    $log['date_tz'] = new \DateTimeZone( $matches[2] );
                 }
-                if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                if( preg_match('/^committer Législateur <> (-?\d+) ([+-]\d+)$/m', $output, $matches) ) {
                     $log['commiter_date'] = $matches[1];
+                    $log['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
                 }
             }
             $commit = new Commit();
             $commit->importData($log);
+            if( array_key_exists( 'date_tz', $log ) ) {
+                $commit->setDate( $commit->getDate()->setTimezone( $log['date_tz'] ) );
+            }
+            if( array_key_exists( 'commiter_date_tz', $log ) ) {
+                $commit->setCommiterDate( $commit->getCommiterDate()->setTimezone( $log['commiter_date_tz'] ) );
+            }
             $commits[] = $commit;
         }
 
