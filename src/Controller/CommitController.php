@@ -174,14 +174,8 @@ class CommitController implements ControllerProviderInterface
             $type = $file ? "$branch -- \"$file\"" : $branch;
             $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
             $commits = $repository->getPaginatedCommits($type, $pager['current']);
-            $categorized = array();
 
-            foreach ($commits as $commit) {
-                $date = $commit->getDate();
-                $date = $date->format('Y-m-d');
-                $categorized[$date][] = $commit;
-            }
-            $commitishPath = $categorized[$version][0]->getHash() .
+            $commitishPath = $commits[0]->getHash() .
                 '/' . lcfirst(preg_replace(array('/codes\//','/\.git/','/-/'), array('','.md','_'), $repo));
 
             return $blameController( $repo, $commitishPath );
