@@ -11,6 +11,46 @@ use Symfony\Component\Filesystem\Filesystem;
 class Repository extends BaseRepository
 {
     /**
+     * Show the repository commit log.
+     *
+     * @return array Commit log
+     */
+    public function getCommits($file = null)
+    {
+        $command = 'log --pretty=format:"<item><hash>%H</hash><short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents><author>%an</author><author_email>%ae</author_email><date>%at</date><commiter>%cn</commiter><commiter_email>%ce</commiter_email><commiter_date>%ct</commiter_date><message><![CDATA[%s]]></message></item>"';
+
+        if ($file) {
+            $command .= " $file";
+        }
+
+        $logs = $this->getPrettyFormat($command);
+
+        $commits = [];
+        foreach ($logs as $log) {
+            if (!$log['date']) {
+                $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$log['hash']);
+                if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                    $log['date'] = $matches[1];
+                }
+                if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                    $log['commiter_date'] = $matches[1];
+                }
+            }
+            $commit = new Commit();
+            $commit->importData($log);
+            $commits[] = $commit;
+
+            foreach ($this->statistics as $statistic) {
+                $statistic->addCommit($commit);
+            }
+        }
+
+        $this->setCommitsHaveBeenParsed(true);
+
+        return $commits;
+    }
+
+    /**
      * Return true if the repo contains this commit.
      *
      * @param string $commitHash Hash of commit whose existence we want to check
@@ -106,6 +146,15 @@ class Repository extends BaseRepository
         // Read commit metadata
         $format = new PrettyFormat();
         $data = $format->parse($commitInfo);
+        if (!$data[0]['date']) {
+            $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$data[0]['hash']);
+            if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                $data[0]['date'] = $matches[1];
+            }
+            if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                $data[0]['commiter_date'] = $matches[1];
+            }
+        }
         $commit = new Commit();
         $commit->importData($data[0]);
 
@@ -285,7 +334,17 @@ class Repository extends BaseRepository
             return array();
         }
 
+        $commits = [];
         foreach ($logs as $log) {
+            if (!$log['date']) {
+                $output = $this->getClient()->run($this, 'log --pretty=raw -1 '.$log['hash']);
+                if( preg_match('/^author Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                    $log['date'] = $matches[1];
+                }
+                if( preg_match('/^committer Législateur <> (-?\d+) [+-]\d+$/m', $output, $matches) ) {
+                    $log['commiter_date'] = $matches[1];
+                }
+            }
             $commit = new Commit();
             $commit->importData($log);
             $commits[] = $commit;
