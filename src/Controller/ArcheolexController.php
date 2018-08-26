@@ -35,13 +35,6 @@ class ArcheolexController implements ControllerProviderInterface
             $type = $file ? "$branch -- \"$file\"" : $branch;
             $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
             $commits = $repository->getPaginatedCommits($type, $pager['current']);
-            $categorized = array();
-
-            foreach ($commits as $commit) {
-                $date = $commit->getCommiterDate();
-                $date = $date->format('Y-m-d');
-                $categorized[$date][] = $commit;
-            }
 
             $template = $app['request']->isXmlHttpRequest() ? 'commits_list.twig' : 'archeolex.twig';
 
@@ -60,7 +53,7 @@ class ArcheolexController implements ControllerProviderInterface
 #                'breadcrumbs'    => $breadcrumbs,
                 'tags'           => $repository->getTags(),
                 'path'           => $file ? $file . '/' : $file,
-                'commits'        => $categorized,
+                'commits'        => $commits,
                 'stats'          => $stats,
                 'authors'        => $authors,
                 'file'           => $file,
@@ -143,15 +136,8 @@ class ArcheolexController implements ControllerProviderInterface
             $type = $file ? "$branch -- \"$file\"" : $branch;
             $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
             $commits = $repository->getPaginatedCommits($type, $pager['current']);
-            $categorized = array();
 
-            foreach ($commits as $commit) {
-                $date = $commit->getDate();
-                $date = $date->format('Y-m-d');
-                $categorized[$date][] = $commit;
-            }
-
-            return $blobVersionController( $repo, $categorized[$version][0]->getHash() );
+            return $blobVersionController( $repo, $commits[0]->getHash() );
         })->assert('repo', $repos)
           ->assert('version', '\d{4}-\d{2}-\d{2}')
           ->bind('version');
