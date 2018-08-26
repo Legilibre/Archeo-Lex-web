@@ -17,7 +17,7 @@ class Repository extends BaseRepository
      */
     public function getCommits($file = null)
     {
-        $command = 'log --pretty=format:"<item><hash>%H</hash><short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents><author>%an</author><author_email>%ae</author_email><date>%at</date><commiter>%cn</commiter><commiter_email>%ce</commiter_email><commiter_date>%ct</commiter_date><message><![CDATA[%s]]></message></item>"';
+        $command = 'log --pretty=format:"<item><hash>%H</hash><short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents><author>%an</author><author_email>%ae</author_email><date>%at</date><date_full>%ai</date_full><commiter>%cn</commiter><commiter_email>%ce</commiter_email><commiter_date>%ct</commiter_date><commiter_date_full>%ci</commiter_date_full><message><![CDATA[%s]]></message></item>"';
 
         if ($file) {
             $command .= " $file";
@@ -37,6 +37,9 @@ class Repository extends BaseRepository
                     $log['commiter_date'] = $matches[1];
                     $log['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
                 }
+            } else {
+                $log['date_tz'] = new \DateTimeZone( substr( $log['date_full'], -5 ) );
+                $log['commiter_date_tz'] = new \DateTimeZone( substr( $log['commiter_date_full'], -5 ) );
             }
             $commit = new Commit();
             $commit->importData($log);
@@ -139,8 +142,8 @@ class Repository extends BaseRepository
                   'show --pretty=format:"<item><hash>%H</hash>'
                 . '<short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents>'
                 . '<author>%aN</author><author_email>%aE</author_email>'
-                . '<date>%at</date><commiter>%cN</commiter><commiter_email>%cE</commiter_email>'
-                . '<commiter_date>%ct</commiter_date>'
+                . '<date>%at</date><date_full>%ai</date_full><commiter>%cN</commiter><commiter_email>%cE</commiter_email>'
+                . '<commiter_date>%ct</commiter_date><commiter_date_full>%ci</commiter_date_full>'
                 . '<message><![CDATA[%s]]></message>'
                 . '<body><![CDATA[%b]]></body>'
                 . "</item>\" $commitHash"
@@ -164,6 +167,9 @@ class Repository extends BaseRepository
                 $data[0]['commiter_date'] = $matches[1];
                 $data[0]['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
             }
+        } else {
+            $data[0]['date_tz'] = new \DateTimeZone( substr( $data[0]['date_full'], -5 ) );
+            $data[0]['commiter_date_tz'] = new \DateTimeZone( substr( $data[0]['commiter_date_full'], -5 ) );
         }
         $commit = new Commit();
         $commit->importData($data[0]);
@@ -335,9 +341,9 @@ class Repository extends BaseRepository
                   "log $pager --pretty=format:\"<item><hash>%H</hash>"
                 . '<short_hash>%h</short_hash><tree>%T</tree><parents>%P</parents>'
                 . '<author>%aN</author><author_email>%aE</author_email>'
-                . '<date>%at</date><commiter>%cN</commiter>'
+                . '<date>%at</date><date_full>%ai</date_full><commiter>%cN</commiter>'
                 . '<commiter_email>%cE</commiter_email>'
-                . '<commiter_date>%ct</commiter_date>'
+                . '<commiter_date>%ct</commiter_date><commiter_date_full>%ci</commiter_date_full>'
                 . '<message><![CDATA[%s]]></message></item>"';
 
         if ($file) {
@@ -362,6 +368,9 @@ class Repository extends BaseRepository
                     $log['commiter_date'] = $matches[1];
                     $log['commiter_date_tz'] = new \DateTimeZone( $matches[2] );
                 }
+            } else {
+                $log['date_tz'] = new \DateTimeZone( substr( $log['date_full'], -5 ) );
+                $log['commiter_date_tz'] = new \DateTimeZone( substr( $log['commiter_date_full'], -5 ) );
             }
             $commit = new Commit();
             $commit->importData($log);
