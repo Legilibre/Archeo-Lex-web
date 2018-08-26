@@ -29,14 +29,14 @@
     NB : les dates avant 1970 sont erronément affichées et peuvent apparaître soit comme le 1er janvier 1970 soit comme des dates aléatoires entre 2015 et 2030.
 </div>
 <div id="archeo-versions">
-{% for date, commit in commits %}
 Versions :
 <ul>
+{% for date, commit in commits %}
 {% for item in commit %}
     <li style="margin-top: 2px;"><a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: item.date | date('Y-m-d')}) }}">{{ macros.date_fr(item.date) }}</a> (<a href="{{ path('commitversion', {repo: repo|replace({'.git':''}), version: item.date | date('Y-m-d')}) }}">modifications</a>)
 {% endfor %}
-</ul>
 {% endfor %}
+</ul>
 </div>
 <div id="archeo-stats-large">
     <a href="{{ path('version', {repo: repo|replace({'.git':''}), version:commits|first|first.date|date('Y-m-d')}) }}" style="font-size: 200%">Texte actuel</a>
