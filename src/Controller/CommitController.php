@@ -133,7 +133,7 @@ class CommitController implements ControllerProviderInterface
           ->bind('blame');
 
         // Commit with date
-        $route->get('{repo}/{version}/modifications', function ($repo, $version) use ($app, $commitController) {
+        $route->get('{repo}/{version}/commit', function ($repo, $version) use ($app, $commitController) {
             if (substr($repo,-4) != '.git') {
                 $repo .= '.git';
             }
@@ -156,6 +156,128 @@ class CommitController implements ControllerProviderInterface
             $commitishPath = $categorized[$version][0]->getHash();
 
             return $commitController( $repo, $commitishPath );
+        })->assert('repo', $repos)
+          ->assert('version', '\d{4}-\d{2}-\d{2}')
+          ->bind('rawcommitversion');
+
+        // Commit with date
+        $route->get('{repo}/{version}/modifications', function ($repo, $version) use ($app) {
+            if (substr($repo,-4) != '.git') {
+                $repo .= '.git';
+            }
+            $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
+
+            $commitishPath = $repository->getHead();
+            list($branch, $file) = $app['util.routing']->parseCommitishPathParam($commitishPath, $repo);
+            list($branch, $file) = $app['util.repository']->extractRef($repository, $branch, $file);
+
+            $type = $file ? "$branch -- \"$file\"" : $branch;
+            $pager = $app['util.view']->getPager($app['request']->get('page'), $repository->getTotalCommits($type));
+            $commits = $repository->getPaginatedCommits($type, $pager['current']);
+            $categorized = array();
+
+            foreach ($commits as $commit) {
+                $date = $commit->getDate();
+                $date = $date->format('Y-m-d');
+                $categorized[$date][] = $commit;
+            }
+            $commitishPath = $categorized[$version][0]->getHash();
+            $textA = $repository->getContentCommit( $commitishPath.'~1', mb_substr( $repo, 0, -4 ) . '.md' );
+            $textB = $repository->getContentCommit( $commitishPath, mb_substr( $repo, 0, -4 ) . '.md' );
+            $commit = $repository->getCommit($commitishPath);
+            $branch = $repository->getHead();
+            $articlesA = \GitList\Diff\LawMarkdownArticles::split_articles( $textA );
+            $articlesB = \GitList\Diff\LawMarkdownArticles::split_articles( $textB );
+            $articles = \GitList\Diff\LawMarkdownArticles::compare_articles( $articlesA, $articlesB );
+            $rawArticles = [];
+            $linesA = explode( "\n", $textA );
+            $linesB = explode( "\n", $textB );
+            foreach( $articles as $article ) {
+                if( $article[0] == 'delete' ) {
+                    preg_match( '/^#+ Article .*$/m', substr( $textA, $article[1], 100 ), $titleArticle );
+                    $lineNumber = array_search( $titleArticle[0], $linesA );
+                    $lines = [];
+                    foreach( explode( "\n", $article[3] ) as $i => $line ) {
+                        $lines[] = [ 'oldnb' => $lineNumber + $i + 1, 'text' => $line ];
+                    }
+                    $lines[0] = [ 'oldnb' => $lineNumber + 1, 'text' => $titleArticle[0] ];
+                    $rawArticles[] = [ 'type' => 'delete', 'text' => $article[3], 'lines' => $lines ];
+                } elseif( $article[0] == 'insert' ) {
+                    preg_match( '/^#+ Article .*$/m', substr( $textB, $article[2], 100 ), $titleArticle );
+                    $lineNumber = array_search( $titleArticle[0], $linesB );
+                    $lines = [];
+                    foreach( explode( "\n", $article[4] ) as $i => $line ) {
+                        $lines[] = [ 'newnb' => $lineNumber + $i + 1, 'text' => $line ];
+                    }
+                    $lines[0] = [ 'newnb' => $lineNumber + 1, 'text' => $titleArticle[0] ];
+                    $rawArticles[] = [ 'type' => 'insert', 'text' => $article[4], 'lines' => $lines ];
+                } elseif( $article[0] == 'replace' ) {
+                    preg_match( '/^#+ Article .*$/m', substr( $textA, $article[1], 100 ), $titleArticleA );
+                    preg_match( '/^#+ Article .*$/m', substr( $textB, $article[2], 100 ), $titleArticleB );
+                    $lineNumberA = array_search( $titleArticleA[0], $linesA );
+                    $lineNumberB = array_search( $titleArticleB[0], $linesB );
+                    $hashHeaderA = preg_replace( '/^(#+ Article ).*$/', '$1', $titleArticleA[0] );
+                    $hashHeaderB = preg_replace( '/^(#+ Article ).*$/', '$1', $titleArticleB[0] );
+                    #var_dump($hashHeaderA);
+                    #ob_get_clean();
+                    $matching_blocks = \GitList\Diff\Diff::ratcliff_obershelp( $hashHeaderA . $article[3], $hashHeaderB . $article[4], '\GitList\Diff\Diff::keep_lcs_words' );
+                    #var_dump( $matching_blocks );
+                    $opcodes = \GitList\Diff\Diff::opcodes_from_matching_blocks( $matching_blocks );
+                    #var_dump( $opcodes );
+                    $lines = \GitList\Diff\Diff::print_diff_opcodes( $hashHeaderA . $article[3], $hashHeaderB . $article[4], $opcodes, 'arrayline' );
+                    #var_dump( $hashHeaderA . $article[3] );
+                    #if( $titleArticleA[0] == '#### Article 229' ) {
+                    #    var_dump( $lines );
+                    #}
+                    foreach( $lines as $i => $line ) {
+                        if( count( $line ) > 1 ) {
+                            foreach( $line as $j => $block ) {
+                                if( !$block['text'] ) {
+                                    unset( $lines[$i][$j] );
+                                    continue;
+                                }
+                            }
+                            $lines[$i] = array_values( $lines[$i] );
+                        }
+                    }
+                    foreach( $lines as $i => $line ) {
+                        if( count( $line ) == 2 ) {
+                            if( ( $line[0]['type'] == 'delete' && $line[1]['type'] == 'insert' ) || ( $line[0]['type'] == 'insert' && $line[1]['type'] == 'delete' ) ) {
+                                array_splice( $lines, $i, 1, [ [ $line[0] ], [ $line[1] ] ] );
+                                #$lines[$i+0.5] = [ $line[1] ];
+                                #$lines[$i] = [ $line[0] ];
+                            }
+                        }
+                    }
+                    $lines = array_values( $lines );
+                    foreach( $lines as $i => $line ) {
+                        foreach( $line as $j => $block ) {
+                            if( !is_null( $block['lineA'] ) ) {
+                                $lines[$i][$j]['lineA'] += $lineNumberA + 1;
+                                $lines[$i][0]['lineA'] = $lines[$i][$j]['lineA'];
+                            }
+                            if( !is_null( $block['lineB'] ) ) {
+                                $lines[$i][$j]['lineB'] += $lineNumberB + 1;
+                                $lines[$i][0]['lineB'] = $lines[$i][$j]['lineB'];
+                            }
+                        }
+                    }
+                    #var_dump( $lines );
+                    $rawArticles[] = [ 'type' => 'replace', 'lines' => $lines ];
+                }
+            }
+            #var_dump( $rawArticles );
+            
+#	var_dump($commitishPath->getDiffs());
+            $diff = [];
+
+            return $app['twig']->render('commitlex.twig', array(
+                'branch' => $branch,
+                'repo' => $repo,
+                'difflex' => $rawArticles,
+                'commit' => $commit,
+            ));
+            #return $commitController( $repo, $commitishPath );
         })->assert('repo', $repos)
           ->assert('version', '\d{4}-\d{2}-\d{2}')
           ->bind('commitversion');
@@ -187,3 +309,5 @@ class CommitController implements ControllerProviderInterface
         return $route;
     }
 }
+
+# vim: set ts=4 sw=4 sts=4 et:

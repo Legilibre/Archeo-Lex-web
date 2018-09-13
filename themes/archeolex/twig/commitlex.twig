@@ -1,0 +1,153 @@
+{% extends 'layout_page.twig' %}
+
+{% set page = 'commits' %}
+{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
+
+{% block title %}{{ titre }} - Archéo Lex{% endblock %}
+
+{% block content %}
+<h1>{{ repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize }}</h1>
+<hr />
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p>Ci-dessous sont présentées les modifications introduites à la date donnée. L’ancien texte est en rouge, le texte introduit à cette date est en vert.</p>
+            <p>Le <i>diff ligne</i> permet de visualiser les modifications avec le découpage standard ligne par ligne.</p>
+        </div>
+    </div>
+
+    <div class="source-view">
+        <div class="source-header">
+            <div class="btn-group pull-right">
+                <a href="{{ path('rawcommitversion', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Diff <i>lignes</i></a>
+                <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
+                <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
+                <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
+            </div>
+            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
+        </div>
+        <div class="source-diff" style="overflow-x:visible">
+        <table>
+        {% for article in difflex %}
+            {% if loop.index > 1 %}
+                <tr class="chunk">
+                    <td class="lineNo">
+                        ...
+                    </td>
+                    <td class="lineNo">
+                        ...
+                    </td>
+                    <td style="width: 100%">
+                        <pre class="chunk" style="padding:0 1px"></pre>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if article.type == 'delete' %}
+                {% for line in article.lines %}
+                    <tr class="old">
+                        <td class="lineNo">
+                            <a name="L{{ line.oldnb }}"></a>
+                            <a href="#L{{ line.oldnb }}">{{ line.oldnb }}</a>
+                        </td>
+                        <td class="lineNo">
+                        </td>
+                        <td style="width: 100%">
+                            <pre class="old" style="padding:0 1px">{{ line.text }}</pre>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% elseif article.type == 'insert' %}
+                {% for line in article.lines %}
+                    <tr class="new">
+                        <td class="lineNo">
+                        </td>
+                        <td class="lineNo">
+                            <a name="R{{ line.newnb }}"></a>
+                            <a href="#R{{ line.newnb }}">{{ line.newnb }}</a>
+                        </td>
+                        <td style="width: 100%">
+                            <pre class="new" style="padding:0 1px">{{ line.text }}</pre>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% elseif article.type == 'replace' %}
+                {% for line in article.lines %}
+                    {% if line|length == 1 %}
+                    {% if line|first.type == 'delete' %}
+                    <tr class="old">
+                    {% elseif line|first.type == 'insert' %}
+                    <tr class="new">
+                    {% endif %}
+                    {% else %}
+                    <tr>
+                    {% endif %}
+                        <td class="lineNo" style="vertical-align:top">
+                            <a name="L{{ line|first.lineA }}"></a>
+                            <a href="#L{{ line|first.lineA }}">{{ line|first.lineA }}</a>
+                        </td>
+                        <td class="lineNo" style="vertical-align:top">
+                            <a name="R{{ line|first.lineB }}"></a>
+                            <a href="#R{{ line|first.lineB }}">{{ line|first.lineB }}</a>
+                        </td>
+                        <td style="width: 100%">
+                            {% if line|length == 1 %}
+                                {% if line|first.type == 'equal' %}
+                                    <pre style="padding:0 1px">{{ line|first.text }}</pre>
+                                {% elseif line|first.type == 'delete' %}
+                                    <pre class="old" style="padding:0 1px">{{ line|first.text }}</pre>
+                                {% elseif line|first.type == 'insert' %}
+                                    <pre class="new" style="padding:0 1px">{{ line|first.text }}</pre>
+                                {% endif %}
+                            {% else %}
+                            {% for block in line %}{% if block.type == 'equal' %}<pre style="display:inline; padding:0 1px">{{ block.text }}</pre>{% elseif block.type == 'delete' %}<pre class="old" style="display:inline; padding:0 1px">{{ block.text }}</pre>{% elseif block.type == 'insert' %}<pre class="new" style="display:inline; padding:0 1px">{{ block.text }}</pre>{% endif %}{% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </table>
+        </div>
+    </div>
+
+    {% for diff in commit.diffs %}
+    <div class="source-view">
+        <div class="source-header">
+            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small> - diff ligne par ligne de référence</h4>
+        </div>
+        <div class="source-diff" style="overflow-x:visible">
+        <table>
+        {% for line in diff.getLines %}
+            <tr>
+                <td class="lineNo">
+                    {% if line.getType != 'chunk' %}
+                        <a name="L{{ loop.index }}R{{ line.getNumOld }}"></a>
+                        <a href="#L{{ loop.index }}R{{ line.getNumOld }}">
+                    {% endif %}
+                    {{ line.getNumOld }}
+                    {% if line.getType != 'chunk' %}
+                        </a>
+                    {% endif %}
+                </td>
+                <td class="lineNo">
+                    {% if line.getType != 'chunk' %}
+                        <a name="L{{ loop.index }}L{{ line.getNumNew }}"></a>
+                        <a href="#L{{ loop.index }}L{{ line.getNumNew }}">
+                    {% endif %}
+                    {{ line.getNumNew }}
+                    {% if line.getType != 'chunk' %}
+                        </a>
+                    {% endif %}
+                </td>
+                <td style="width: 100%">
+                    <pre{% if line.getType %} class="{{ line.getType }}"{% endif %}>{{ line.getLine }}</pre>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+    </div>
+    {% endfor %}
+
+    <hr />
+{% endblock %}

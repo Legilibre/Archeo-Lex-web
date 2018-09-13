@@ -78,6 +78,17 @@ class Repository extends BaseRepository
     }
 
     /**
+     * @param string $commitHash Hash of commit whose existence we want to check
+     * @param string $filename Name of the file we want retrieve
+     *
+     * @return string
+     */
+    public function getContentCommit($commitHash, $filename)
+    {
+        return $this->getClient()->run($this, "show $commitHash:$filename");
+    }
+
+    /**
      * Get the current branch, returning a default value when HEAD is detached.
      */
     public function getHead($default = null)

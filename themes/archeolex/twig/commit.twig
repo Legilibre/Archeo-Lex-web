@@ -12,7 +12,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <p>Ci-dessous sont présentées les modifications introduites à la date donnée. L’ancien texte est en rouge, le texte introduit à cette date est en vert.</p>
-            <p>NB : un ascenseur horizontal est disponible en fin de page.</p>
+            <p>Le <i>diff mot-à-mot</i> permet de visualiser les modifications en découpant au niveau des mots plutôt que des lignes. Il peut ne pas fonctionner.</p>
         </div>
     </div>
 
@@ -20,13 +20,14 @@
     <div class="source-view">
         <div class="source-header">
             <div class="btn-group pull-right">
+                <a href="{{ path('commitversion', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> <i>Diff mot-à-mot</i></a>
                 <a href="{{ path('version', {repo: repo | replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}"  class="btn btn-default btn-sm"><span class="fa fa-file"></span> Voir cette version</a>
                 <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
                 <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
             </div>
             <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
         </div>
-        <div class="source-diff">
+        <div class="source-diff" style="overflow-x:visible">
         <table>
         {% for line in diff.getLines %}
             <tr>
