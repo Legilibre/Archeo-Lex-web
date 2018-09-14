@@ -109,46 +109,5 @@
         </div>
     </div>
 
-    <hr style="margin:3em 0;" />
-
-    {% for diff in commit.diffs %}
-    <div class="source-view">
-        <div class="source-header">
-            <h4>Diff ligne par ligne pour comparaison <small style="color:black">(identique au diff ci-dessus avec seulement une précision à la ligne et non au mot)</small></h4>
-        </div>
-        <div class="source-diff" style="overflow-x:visible">
-        <table>
-        {% for line in diff.getLines %}
-            <tr>
-                <td class="lineNo">
-                    {% if line.getType != 'chunk' %}
-                        <a name="L{{ loop.index }}R{{ line.getNumOld }}"></a>
-                        <a href="#L{{ loop.index }}R{{ line.getNumOld }}">
-                    {% endif %}
-                    {{ line.getNumOld }}
-                    {% if line.getType != 'chunk' %}
-                        </a>
-                    {% endif %}
-                </td>
-                <td class="lineNo">
-                    {% if line.getType != 'chunk' %}
-                        <a name="L{{ loop.index }}L{{ line.getNumNew }}"></a>
-                        <a href="#L{{ loop.index }}L{{ line.getNumNew }}">
-                    {% endif %}
-                    {{ line.getNumNew }}
-                    {% if line.getType != 'chunk' %}
-                        </a>
-                    {% endif %}
-                </td>
-                <td style="width: 100%">
-                    <pre{% if line.getType %} class="{{ line.getType }}"{% endif %}>{{ line.getLine }}</pre>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
-        </div>
-    </div>
-    {% endfor %}
-
     <hr />
 {% endblock %}
