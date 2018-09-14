@@ -23,7 +23,7 @@
                 <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
                 <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
             </div>
-            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small></h4>
+            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small><br /><small>La précédente version était la {{ messageprec }}.</h4>
         </div>
         <div class="source-diff" style="overflow-x:visible">
         <table>
@@ -114,7 +114,7 @@
     {% for diff in commit.diffs %}
     <div class="source-view">
         <div class="source-header">
-            <h4>Diff ligne par ligne de référence <small style="color:black">(identique au diff ci-dessus avec seulement une précision à la ligne)</small></h4>
+            <h4>Diff ligne par ligne pour comparaison <small style="color:black">(identique au diff ci-dessus avec seulement une précision à la ligne et non au mot)</small></h4>
         </div>
         <div class="source-diff" style="overflow-x:visible">
         <table>

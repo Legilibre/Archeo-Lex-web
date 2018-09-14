@@ -95,13 +95,17 @@ class CommitController implements ControllerProviderInterface
 
         $route->get('{repo}/commit/{commit}', $commitController = function ($repo, $commit) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
-            $commit = $repository->getCommit($commit);
+            $commitcur = $repository->getCommit($commit);
+            $commitprec = $repository->getCommit($commit."~1");
+            $messageprec = strtolower( $commitprec->getMessage() );
             $branch = $repository->getHead();
 
             return $app['twig']->render('commit.twig', array(
                 'branch' => $branch,
                 'repo' => $repo,
-                'commit' => $commit,
+                'commit' => $commitcur,
+                'commitprec' => $commitprec,
+                'messageprec' => $messageprec,
             ));
         })->assert('repo', $app['util.routing']->getRepositoryRegex())
           ->assert('commit', '[a-f0-9^]+')
@@ -184,7 +188,9 @@ class CommitController implements ControllerProviderInterface
             $commitishPath = $categorized[$version][0]->getHash();
             $textA = $repository->getContentCommit( $commitishPath.'~1', mb_substr( $repo, 0, -4 ) . '.md' );
             $textB = $repository->getContentCommit( $commitishPath, mb_substr( $repo, 0, -4 ) . '.md' );
-            $commit = $repository->getCommit($commitishPath);
+            $commitcur = $repository->getCommit($commitishPath);
+            $commitprec = $repository->getCommit($commitishPath."~1");
+            $messageprec = strtolower( $commitprec->getMessage() );
             $branch = $repository->getHead();
             $articlesA = \GitList\Diff\LawMarkdownArticles::split_articles( $textA );
             $articlesB = \GitList\Diff\LawMarkdownArticles::split_articles( $textB );
@@ -275,7 +281,9 @@ class CommitController implements ControllerProviderInterface
                 'branch' => $branch,
                 'repo' => $repo,
                 'difflex' => $rawArticles,
-                'commit' => $commit,
+                'commit' => $commitcur,
+                'commitprec' => $commitprec,
+                'messageprec' => $messageprec,
             ));
             #return $commitController( $repo, $commitishPath );
         })->assert('repo', $repos)
