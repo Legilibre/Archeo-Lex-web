@@ -10,15 +10,12 @@
     <div class="repository">
         <div class="repository-header">
             <span class="fa fa-folder-open"></span>  <a href="{{ path('summaryrepo', {repo: repository.name | replace({'.git': ''})}) }}">{{ repository.name | replace({'codes/':'', '.git':'', '_':' ', '-':' '}) | capitalize }}</a>
-            <a href="{{ path('rss', {repo: repository.name, branch: 'master'}) }}"><span class="fa fa-rss rss-icon pull-right"></span></a>
         </div>
+        {% if repository.description and not repository.description starts with 'Unnamed repository' %}
         <div class="repository-body">
-            {% if repository.description %}
             <p>{{ repository.description }}</p>
-            {% else %}
-            <p>Il n’y a pas de fichier de description du dépôt. Veuillez en créer un pour retirer ce message.</p>
-            {% endif %}
         </div>
+        {% endif %}
     </div>
     {% endfor %}
 
