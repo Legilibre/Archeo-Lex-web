@@ -1,16 +1,15 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'historique' %}
-{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 {% macro date_fr(date) %}
 {{date | date('j F Y', false) | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
 {% endmacro %}
 {% import _self as macros %}
 
-{% block title %}{{ titre }} - Archéo Lex{% endblock %}
+{% block title %}{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ titre }}</h1>
+<h1>{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }}</h1>
 <hr />
 
 {% if commits and files %}

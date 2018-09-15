@@ -1,12 +1,11 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'commits' %}
-{% set titre = repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize %}
 
-{% block title %}{{ titre }} - Archéo Lex{% endblock %}
+{% block title %}{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize }}</h1>
+<h1>{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }}</h1>
 <hr />
 
     <div class="panel panel-default">
