@@ -186,8 +186,8 @@ class CommitController implements ControllerProviderInterface
                 $categorized[$date][] = $commit;
             }
             $commitishPath = $categorized[$version][0]->getHash();
-            $textA = $repository->getContentCommit( $commitishPath.'~1', mb_substr( $repo, 0, -4 ) . '.md' );
-            $textB = $repository->getContentCommit( $commitishPath, mb_substr( $repo, 0, -4 ) . '.md' );
+            $textA = $repository->getContentCommit( $commitishPath.'~1', preg_replace( '/.*?([^\/]+)\.git$/u', '$1.md', $repo ) );
+            $textB = $repository->getContentCommit( $commitishPath, preg_replace( '/.*?([^\/]+)\.git$/u', '$1.md', $repo ) );
             $commitcur = $repository->getCommit($commitishPath);
             $commitprec = $repository->getCommit($commitishPath."~1");
             $messageprec = strtolower( $commitprec->getMessage() );
