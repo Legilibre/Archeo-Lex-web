@@ -85,7 +85,8 @@ class Repository extends BaseRepository
      */
     public function getContentCommit($commitHash, $filename)
     {
-        return $this->getClient()->run($this, "show $commitHash:$filename");
+        $filename = str_replace("'", "'\\''", $filename);
+        return $this->getClient()->run($this, "show '$commitHash:$filename'");
     }
 
     /**
