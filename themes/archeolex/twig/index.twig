@@ -9,7 +9,7 @@
     {% for repository in repositories %}
     <div class="repository">
         <div class="repository-header">
-            <span class="fa fa-folder-open"></span>  <a href="{{ path('summaryrepo', {repo: repository.name | replace({'.git': ''})}) }}">{{ repository.name[0:1] | upper }}{{ repository.name[1:] | replace({'codes/':'', '.git':'', '_':' ', '-':' ', 'E':'É'}) }}</a>
+            <span class="fa fa-folder-open"></span>  <a href="{{ path('summaryrepo', {repo: repository.name | replace({'.git': ''})}) }}">{{ repository.name[0:1] | upper }}{{ repository.name[1:] | replace({'codes/':'', '.git':'', '_':' ', '-':' ', 'E':'É', '\'':'’'}) }}</a>
         </div>
         {% if repository.description %}
         <div class="repository-body">

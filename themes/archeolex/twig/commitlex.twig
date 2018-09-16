@@ -2,10 +2,10 @@
 
 {% set page = 'commits' %}
 
-{% block title %}{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }} - Archéo Lex{% endblock %}
+{% block title %}{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É', '\'':'’'}) }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É'}) }}</h1>
+<h1>{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É', '\'':'’'}) }}</h1>
 <hr />
 
     <div class="panel panel-default">
@@ -30,10 +30,10 @@
             {% if loop.index > 1 %}
                 <tr class="chunk">
                     <td class="lineNo">
-                        ...
+                        &nbsp;
                     </td>
                     <td class="lineNo">
-                        ...
+                        &nbsp;
                     </td>
                     <td style="width: 100%">
                         <pre class="chunk" style="padding:0 1px"></pre>
@@ -43,7 +43,7 @@
             {% if article.type == 'delete' %}
                 {% for line in article.lines %}
                     <tr class="old">
-                        <td class="lineNo">
+                        <td class="lineNo" style="vertical-align:top">
                             <a name="L{{ line.oldnb }}"></a>
                             <a href="#L{{ line.oldnb }}">{{ line.oldnb }}</a>
                         </td>
@@ -59,7 +59,7 @@
                     <tr class="new">
                         <td class="lineNo">
                         </td>
-                        <td class="lineNo">
+                        <td class="lineNo" style="vertical-align:top">
                             <a name="R{{ line.newnb }}"></a>
                             <a href="#R{{ line.newnb }}">{{ line.newnb }}</a>
                         </td>
