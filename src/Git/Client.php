@@ -185,7 +185,7 @@ class Client extends BaseClient
                         $return = false;
 
                         array_walk($hide, function ($value, $key) use ($path, &$return) {
-                            if (($path === $value) || (1 === preg_match($value, $path))) {
+                            if (($path === $value) || (1 === preg_match('/'.preg_quote($value,'/').'/', $path))) {
                                 $return = true;
                             }
                         });
