@@ -6,10 +6,10 @@
 {% endmacro %}
 {% import _self as macros %}
 
-{% block title %}{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É', '\'':'’'}) }} - Archéo Lex{% endblock %}
+{% block title %}{{ repo | replace({'codes/':''})[0:1] | upper }}{{ repo | replace({'codes/':''})[1:] | replace({'\.git':'', '_':' ', 'E':'É', '\'':'’'}) }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo[0:1] | upper }}{{ repo[1:] | replace({'codes/':'', '\.git':'', '_':' ', '-':' ', 'E':'É', '\'':'’'}) }}</h1>
+<h1>{{ repo | replace({'codes/':''})[0:1] | upper }}{{ repo | replace({'codes/':''})[1:] | replace({'\.git':'', '_':' ', 'E':'É', '\'':'’'}) }}</h1>
 <hr />
 
 {% if commits and files %}
