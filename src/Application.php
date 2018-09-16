@@ -108,7 +108,6 @@ class Application extends SilexApplication
 
         $this->after(function (Request $request, Response $response) use($cache_control) {
                 $response->headers->set( 'Cache-Control', $cache_control );
-		var_dump($response);
         });
 
         $this->finish(function () use ($app, $config) {
