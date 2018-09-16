@@ -10,6 +10,8 @@ use Silex\Application as SilexApplication;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * GitList application.
@@ -38,6 +40,7 @@ class Application extends SilexApplication
         $this['cache.archives'] = $this->getCachePath() . 'archives';
         $this['avatar.url'] = $config->get('avatar', 'url');
         $this['avatar.query'] = $config->get('avatar', 'query');
+        $cache_control = $this['cache_control'] = $config->get('app', 'cache_control') ? $config->get('app', 'cache_control') : 's-maxage=3600, public';
 
         // Register services
         $this->register(new TwigServiceProvider(), array(
@@ -101,6 +104,11 @@ class Application extends SilexApplication
             return $app['twig']->render('error.twig', array(
                 'message' => $e->getMessage(),
             ));
+        });
+
+        $this->after(function (Request $request, Response $response) use($cache_control) {
+                $response->headers->set( 'Cache-Control', $cache_control );
+		var_dump($response);
         });
 
         $this->finish(function () use ($app, $config) {
