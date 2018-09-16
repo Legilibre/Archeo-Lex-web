@@ -1,9 +1,7 @@
 {% extends 'layout_page.twig' %}
 
 {% set page = 'historique' %}
-{% macro date_fr(date) %}
-{{date | date('j F Y', false) | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}
-{% endmacro %}
+{% macro date_fr(date) %}{{date | date('j F Y', false) | replace({'1 ':'1er ', 'January':'janvier', 'February':'février', 'March':'mars', 'April':'avril', 'May':'mai', 'June':'juin', 'July':'juillet', 'August':'août', 'September':'septembre', 'October':'octobre', 'November':'novembre', 'December':'décembre'}) | replace({'11er ':'11 ', '21er ':'21 ', '31er ':'31 '}) }}{% endmacro %}
 {% import _self as macros %}
 
 {% block title %}{{ repo | replace({'codes/':''})[0:1] | upper }}{{ repo | replace({'codes/':''})[1:] | replace({'\.git':'', '_':' ', 'E':'É', '\'':'’'}) }} - Archéo Lex{% endblock %}
