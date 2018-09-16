@@ -24,7 +24,7 @@
                 <a href="{{ path('blameversion', {repo: repo|replace({'.git': ''}), version: commit.date|date('Y-m-d', false)}) }}" class="btn btn-default btn-sm"><span class="fa fa-bullhorn"></span> Texte annoté</a>
                 <a href="{{ path('summaryrepo', {repo: (repo | replace({'.git': ''}))}) }}"  class="btn btn-default btn-sm"><span class="fa fa-list"></span> Historique</a>
             </div>
-            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small><br /><small>La précédente version était la {{ messageprec }}.</h4>
+            <h4>{{ commit.message }} <small>(version {{ commit.shortHash }})</small><br /><small>{% if messageprec != '' %}La précédente version était la {{ messageprec }}{% else %}Il n’y a pas de version précédente, ceci est la première version{% endif %}.</h4>
         </div>
         <div class="source-diff" style="overflow-x:visible">
         <table>

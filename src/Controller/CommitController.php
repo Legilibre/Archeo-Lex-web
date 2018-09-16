@@ -96,8 +96,13 @@ class CommitController implements ControllerProviderInterface
         $route->get('{repo}/commit/{commit}', $commitController = function ($repo, $commit) use ($app) {
             $repository = $app['git']->getRepositoryFromName($app['git.repos'], $repo);
             $commitcur = $repository->getCommit($commit);
-            $commitprec = $repository->getCommit($commit."~1");
-            $messageprec = strtolower( $commitprec->getMessage() );
+            try {
+                $commitprec = $repository->getCommit($commit."~1");
+                $messageprec = strtolower( $commitprec->getMessage() );
+            } catch( \RuntimeException $e ) {
+                $commitprec = null;
+                $messageprec = '';
+            }
             $branch = $repository->getHead();
 
             return $app['twig']->render('commit.twig', array(
@@ -186,11 +191,20 @@ class CommitController implements ControllerProviderInterface
                 $categorized[$date][] = $commit;
             }
             $commitishPath = $categorized[$version][0]->getHash();
-            $textA = $repository->getContentCommit( $commitishPath.'~1', preg_replace( '/.*?([^\/]+)\.git$/u', '$1.md', $repo ) );
+            try {
+                $textA = $repository->getContentCommit( $commitishPath.'~1', preg_replace( '/.*?([^\/]+)\.git$/u', '$1.md', $repo ) );
+            } catch( \RuntimeException $e ) {
+                $textA = '';
+            }
             $textB = $repository->getContentCommit( $commitishPath, preg_replace( '/.*?([^\/]+)\.git$/u', '$1.md', $repo ) );
             $commitcur = $repository->getCommit($commitishPath);
-            $commitprec = $repository->getCommit($commitishPath."~1");
-            $messageprec = strtolower( $commitprec->getMessage() );
+            try {
+                $commitprec = $repository->getCommit($commitishPath."~1");
+                $messageprec = strtolower( $commitprec->getMessage() );
+            } catch( \RuntimeException $e ) {
+                $commitprec = null;
+                $messageprec = '';
+            }
             $branch = $repository->getHead();
             $articlesA = \GitList\Diff\LawMarkdownArticles::split_articles( $textA );
             $articlesB = \GitList\Diff\LawMarkdownArticles::split_articles( $textB );
