@@ -83,3 +83,14 @@ $(function () {
     }
     paginate();
 });
+
+$(function() {
+
+	$('footer a[href="https://github.com/Seb35/Archeo-Lex-web/issues"]').click( function() {
+		window.location.replace( '/codes/credits' );
+		return false;
+	});
+
+	$('.jowjgoiwjoi').css('display', 'none' );
+
+});
