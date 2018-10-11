@@ -6,7 +6,7 @@
 {% block title %}{{ titre }} - Archéo Lex{% endblock %}
 
 {% block content %}
-<h1>{{ repo | replace({'codes/':'', '\.git':'', '_':' ', '-':' '}) | capitalize }}</h1>
+<h1>{{ repo | replace({'codes/':''})[0:1] | upper }}{{ repo | replace({'codes/':''})[1:] | replace({'\.git':'', '_':' ', 'E':'É', '\'':'’'}) }}</h1>
 <hr />
 
     <div class="panel panel-default">
