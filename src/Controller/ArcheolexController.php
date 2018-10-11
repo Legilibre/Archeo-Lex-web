@@ -75,7 +75,7 @@ class ArcheolexController implements ControllerProviderInterface
             if (substr($repo,-4) != '.git') {
                 $repo .= '.git';
             }
-            $commitishPath .= '/' . lcfirst(preg_replace(array('/codes\//','/\.git/','/-/'), array('','.md','_'), $repo));
+            $commitishPath .= '/' . lcfirst(preg_replace(array('/codes\//','/\.git/'), array('','.md'), $repo));
             //$request = $app['request'];
             //$subRequest = Request::create('/' . 'gitlist' . '/' . $repo . '/' . 'commit' . '/' . $commitishPath, 'GET', array(), $request->cookies->all(), array(), $request->server->all());
             //return $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);

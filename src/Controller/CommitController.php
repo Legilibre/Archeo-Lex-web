@@ -320,7 +320,7 @@ class CommitController implements ControllerProviderInterface
             $commits = $repository->getPaginatedCommits($type, $pager['current']);
 
             $commitishPath = $commits[0]->getHash() .
-                '/' . lcfirst(preg_replace(array('/codes\//','/\.git/','/-/'), array('','.md','_'), $repo));
+                '/' . lcfirst(preg_replace(array('/codes\//','/\.git/'), array('','.md'), $repo));
 
             return $blameController( $repo, $commitishPath );
         })->assert('repo', $repos)
