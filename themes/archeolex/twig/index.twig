@@ -13,7 +13,7 @@
         </div>
         {% if repository.description %}
         <div class="repository-body">
-            <p>{{ repository.description }}</p>
+            <p>{{ repository.description|replace({' (dernière':'.<br /><small>Dernière', 'CEST)':'CEST.</small>'})|raw }}</p>
         </div>
         {% endif %}
     </div>
