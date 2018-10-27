@@ -1,0 +1,8 @@
+[submodule "themes/archeolex/less/vendor/bootstrap"]
+	path = themes/archeolex/less/vendor/bootstrap
+	url = https://github.com/twbs/bootstrap.git
+	branch = v3.3.7
+[submodule "themes/archeolex/less/vendor/fontawesome"]
+	path = themes/archeolex/less/vendor/fontawesome
+	url = https://github.com/FortAwesome/Font-Awesome.git
+	branch = v4.7.0
