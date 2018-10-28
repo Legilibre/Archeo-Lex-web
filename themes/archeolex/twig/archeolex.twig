@@ -21,9 +21,7 @@
     <br /><br />
     Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
     <br /><br />
-    Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
-    <br /><br />
-    NB : les dates avant 1970 sont erronément affichées et peuvent apparaître soit comme le 1er janvier 1970 soit comme des dates aléatoires entre 2015 et 2030.
+    Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>
 <div id="archeo-versions">
 Versions :
@@ -42,9 +40,7 @@ Versions :
     <br /><br />
     Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
     <br /><br />
-    Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/git/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
-    <br /><br />
-    NB : les dates avant 1970 sont erronément affichées et peuvent apparaître soit comme le 1er janvier 1970 soit comme des dates aléatoires entre 2015 et 2030.
+    Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>
 </div>
 {% else %}
