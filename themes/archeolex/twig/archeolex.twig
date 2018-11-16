@@ -19,7 +19,7 @@
     <br /><br />
     Du {{ macros.date_fr(commits|last.date) }} au {{ macros.date_fr(commits|first.date) }}
     <br /><br />
-    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
+    Date de mise à jour : {% if meta['éditorialisation']['dernière-date'] %}{{ macros.date_fr(meta['éditorialisation']['dernière-date']) }}{% else %}inconnue{% endif %}
     <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>
@@ -38,7 +38,7 @@ Versions :
     <br /><br />
     Du {{ macros.date_fr(commits|last.date) }} au {{ macros.date_fr(commits|first.date) }}
     <br /><br />
-    Date de mise à jour : <!--{% if commits|first.commiter.name == "Législateur" %}{{ macros.date_fr(commits|first.commiterDate) }} à {{ commits|first.commiterDate|date('H:i:s (T)', false) }}{% else %}inconnue{% endif %}-->inconnue
+    Date de mise à jour : {% if meta['éditorialisation']['dernière-date'] %}{{ macros.date_fr(meta['éditorialisation']['dernière-date']) }}{% else %}inconnue{% endif %}
     <br /><br />
     Git : <input type="text" id="gitrepo-address" value="https://archeo-lex.fr/{{ repo | replace({'\.git':''}) }}" readonly="readonly" style="background:#ebebeb;border:1px solid #adadad;border-radius:3px;box-sizing:border-box;color:#333333;width:200px;" />
 </div>

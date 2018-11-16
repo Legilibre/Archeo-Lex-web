@@ -58,6 +58,7 @@ class ArcheolexController implements ControllerProviderInterface
                 'authors'        => $authors,
                 'file'           => $file,
                 'files'          => $files->output(),
+                'meta'           => $repository->getMeta(),
             ));
         })->assert('date','\d{4}-\d{2}-\d{2}')
           ->assert('repo', $repos)

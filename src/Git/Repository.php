@@ -8,9 +8,15 @@ use Gitter\PrettyFormat;
 use Gitter\Util\DateTime;
 use Gitter\Repository as BaseRepository;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class Repository extends BaseRepository
 {
+
+    public $meta = null;
+
     /**
      * Show the repository commit log.
      *
@@ -201,6 +207,43 @@ class Repository extends BaseRepository
         $commit->setDiffs($this->readDiffLogs($logs));
 
         return $commit;
+    }
+
+    /**
+     * Get content of YAML file meta.yaml in refs/meta.
+     *
+     * @return array  Structured content
+     */
+    public function getMeta() {
+
+        if ($this->meta !== null) {
+            return $this->meta;
+        }
+
+        $meta = null;
+        try {
+            $ls_tree = $this->getClient()->run($this, 'ls-tree refs/meta');
+        } catch( \RuntimeException $e ) {
+            $ls_tree = '';
+        }
+        if( preg_match( '/^100644\s+blob\s+([0-9a-f]+)\s+meta\.yaml$/', trim($ls_tree), $matches) ) {
+            try {
+                $meta = trim($this->getClient()->run($this, 'cat-file -p '.$matches[1]));
+            } catch( \RuntimeException $e ) {
+                $meta = [];
+            }
+        }
+
+        if ($meta) {
+            try {
+                $meta = Yaml::parse( $meta );
+             } catch( ParseException $exception ) {
+                 $meta = [];
+             }
+        }
+
+        $this->meta = $meta;
+        return $meta;
     }
 
     /**
